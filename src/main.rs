@@ -1,6 +1,6 @@
 use std::io;
 use std::process;
-use Mark::None;
+use Mark::Empty;
 use rand::Rng;
 
 #[derive(Copy, Clone)]
@@ -15,7 +15,7 @@ enum PlayerType{
 enum Mark {
     X,
     O,
-    None,
+    Empty,
 }
 
 struct Game {
@@ -43,11 +43,12 @@ impl Game {
 
     /// Sets the mark on the square. If a mark already exists on the square, the function returns false.
     fn set_mark(&mut self, x: usize, y: usize, mark: Mark) -> bool {
-        if self.get_mark(x, y) != Mark::None {
+        if self.get_mark(x, y) != Empty {
             self.grid[x + y * 3] = mark;
             true
         }
         else {
+            println!("x:{} y:{}",x ,y);
             false
         }        
     }
@@ -58,51 +59,51 @@ impl Game {
         // Horizontal win conditions
         if self.get_mark(0,0) == self.get_mark(1,0) && 
            self.get_mark(1,0) == self.get_mark(2,0) && 
-           self.get_mark(0,0) != Mark::None {
+           self.get_mark(0,0) != Mark::Empty {
             return true    
         }
         
         if self.get_mark(0,1) == self.get_mark(1,1) && 
            self.get_mark(1,1) == self.get_mark(2,1) &&
-           self.get_mark(0,1) != Mark::None {
+           self.get_mark(0,1) != Mark::Empty {
             return true
         }
         
         if self.get_mark(0,2) == self.get_mark(1,2) &&
            self.get_mark(1,2) == self.get_mark(2,2) &&
-           self.get_mark(0,2) != Mark::None {
+           self.get_mark(0,2) != Mark::Empty {
                     return true
         }
     
         // Vertical win conditions
         if self.get_mark(0,0) == self.get_mark(0,1) &&
            self.get_mark(0,1) == self.get_mark(0,2) &&
-           self.get_mark(0,0) != Mark::None {
+           self.get_mark(0,0) != Mark::Empty {
                     return true
         }
 
         if self.get_mark(1,0) == self.get_mark(1,1) &&
            self.get_mark(1,1) == self.get_mark(1,2) &&
-           self.get_mark(1,0) != Mark::None {
+           self.get_mark(1,0) != Mark::Empty {
                     return true
         }
 
         if self.get_mark(2,0) == self.get_mark(2,1) &&
            self.get_mark(2,1) == self.get_mark(2,2) &&
-           self.get_mark(2,0) != Mark::None {
+           self.get_mark(2,0) != Mark::Empty {
                     return true
         }
 
         // Diagonal win conditions
         if self.get_mark(0,0) == self.get_mark(1,1) &&
            self.get_mark(1,1) == self.get_mark(2,2) &&
-           self.get_mark(0,0) != Mark::None {
+           self.get_mark(0,0) != Mark::Empty {
                     return true
         }
 
         if self.get_mark(0,2) == self.get_mark(1,1) &&
            self.get_mark(1,1) == self.get_mark(2,0) &&
-           self.get_mark(0,2) != Mark::None {
+           self.get_mark(0,2) != Mark::Empty {
                 return true
         }
 
@@ -115,7 +116,7 @@ impl Game {
     fn is_draw(&self) -> bool {
         for x in 0..2 {
             for y in 0..2 {
-                if self.get_mark(x,y) == None {
+                if self.get_mark(x,y) == Empty {
                     return true
                 }
             }
@@ -140,8 +141,8 @@ impl Game {
     fn easy_turn(&mut self) {
         loop {
             let mut rng = rand::thread_rng();
-            let x: usize = rng.gen_range(0, 2);
-            let y: usize = rng.gen_range(0, 2);
+            let x: usize = rng.gen_range(0, 3);
+            let y: usize = rng.gen_range(0, 3);
             if self.set_mark(x, y, self.currentplayer.mark) {
                 println!("X:{} Y:{}",x , y);
                 break;
@@ -161,7 +162,7 @@ impl Game {
         match self.get_mark(x, y) {
             Mark::X => 'X',
             Mark::O => 'O',
-            None => ' ',
+            Empty => ' ',
         }
     }
 
@@ -228,7 +229,7 @@ fn main() {
         let (cp, np) = menu();
 
         let mut game = Game {
-            grid: vec![None,None,None,None,None,None,None,None,None],
+            grid: vec![Empty,Empty,Empty,Empty,Empty,Empty,Empty,Empty,Empty],
             currentplayer: Player {ptype: cp, mark: Mark::X},
             nextplayer: Player {ptype: np, mark: Mark::O},
         };
