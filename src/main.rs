@@ -130,9 +130,44 @@ impl Game {
         self.print_grid();
     }
 
-    fn human_turn(&self) {
-        panic!("Human interface not yet implemented");
+    fn human_turn(&mut self) {
+        // panic!("Human interface not yet implemented");
+        let mut x:usize = 3;
+        let mut y:usize = 3;
+        loop {
+            println!("Enter x y: ");
+            let mut input = String::new();
+            match io::stdin().read_line(&mut input) {
+                Ok(_n) => {
+                    let mitem: Vec<&str> = input.split_whitespace().collect();
+                    if mitem.len() != 2 {
+                        println!("You must enter two numbers separated by a space.");
+                        continue;
+                    }
+                    let xtemp = mitem[0].parse().unwrap_or(4);
+                    let ytemp = mitem[1].parse().unwrap_or(4);
+
+                    if xtemp > 2 || ytemp > 2 {
+                        println!("Your numbers must be between 0 and 2.");
+                        continue;
+                    }
+                    x = xtemp;
+                    y = ytemp;
+
+                    if self.set_mark(x, y, self.currentplayer.mark) {
+                        break;
+                    } else {
+                        println!("There is already a mark there!");
+                        continue
+                    }
+                }
+                Err(_) => {
+
+                }
+            }
+        }
     }
+
 
     fn easy_turn(&mut self) {
         loop {
@@ -162,13 +197,14 @@ impl Game {
     }
 
     fn print_grid(&self) {
-        println!("+-+-+-+");
-        println!("|{}|{}|{}|", self.print_mark(0,2), self.print_mark(1,2), self.print_mark(2,2));
-        println!("+-+-+-+");
-        println!("|{}|{}|{}|", self.print_mark(0,1), self.print_mark(1,1), self.print_mark(2,1));
-        println!("+-+-+-+");
-        println!("|{}|{}|{}|", self.print_mark(0,0), self.print_mark(1,0), self.print_mark(2,0));
-        println!("+-+-+-+");
+        println!("Y +-+-+-+");
+        println!("2 |{}|{}|{}|", self.print_mark(0,2), self.print_mark(1,2), self.print_mark(2,2));
+        println!("  +-+-+-+");
+        println!("1 |{}|{}|{}|", self.print_mark(0,1), self.print_mark(1,1), self.print_mark(2,1));
+        println!("  +-+-+-+");
+        println!("0 |{}|{}|{}|", self.print_mark(0,0), self.print_mark(1,0), self.print_mark(2,0));
+        println!("  +-+-+-+");
+        println!("X->0 1 2");
     }
 }
 
