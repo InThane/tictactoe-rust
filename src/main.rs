@@ -131,9 +131,6 @@ impl Game {
     }
 
     fn human_turn(&mut self) {
-        // panic!("Human interface not yet implemented");
-        let mut x:usize = 3;
-        let mut y:usize = 3;
         loop {
             println!("Enter x y: ");
             let mut input = String::new();
@@ -144,15 +141,13 @@ impl Game {
                         println!("You must enter two numbers separated by a space.");
                         continue;
                     }
-                    let xtemp = mitem[0].parse().unwrap_or(4);
-                    let ytemp = mitem[1].parse().unwrap_or(4);
+                    let x = mitem[0].parse().unwrap_or(4);
+                    let y = mitem[1].parse().unwrap_or(4);
 
-                    if xtemp > 2 || ytemp > 2 {
+                    if x > 2 || y > 2 {
                         println!("Your numbers must be between 0 and 2.");
                         continue;
                     }
-                    x = xtemp;
-                    y = ytemp;
 
                     if self.set_mark(x, y, self.currentplayer.mark) {
                         break;
