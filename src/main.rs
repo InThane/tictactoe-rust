@@ -43,19 +43,17 @@ impl Game {
 
     /// Sets the mark on the square. If a mark already exists on the square, the function returns false.
     fn set_mark(&mut self, x: usize, y: usize, mark: Mark) -> bool {
-        if self.get_mark(x, y) != Empty {
+        if self.get_mark(x, y) == Empty {
             self.grid[x + y * 3] = mark;
             true
         }
         else {
-            println!("x:{} y:{}",x ,y);
             false
         }        
     }
 
     /// Returns true if either side won, false if neither side has won.
     fn won(&self) -> bool {
-        println!("Entering won");
         // Horizontal win conditions
         if self.get_mark(0,0) == self.get_mark(1,0) && 
            self.get_mark(1,0) == self.get_mark(2,0) && 
@@ -114,24 +112,22 @@ impl Game {
 
     /// Returns true if the game is drawn.
     fn is_draw(&self) -> bool {
-        for x in 0..2 {
-            for y in 0..2 {
-                if self.get_mark(x,y) == Empty {
-                    return true
-                }
+        for i in self.grid.as_slice() {
+            if *i == Mark::Empty {
+                return false;
             }
         }
-        false
+        true
     }
 
     fn take_turn(&mut self) {
-        self.print_grid();
         match &self.currentplayer.ptype {
             PlayerType::Human => self.human_turn(),
             PlayerType::Easy => self.easy_turn(),
             PlayerType::Medium => self.med_turn(),
             PlayerType::Hard => self.hard_turn(),
         }
+        self.print_grid();
     }
 
     fn human_turn(&self) {
@@ -144,7 +140,6 @@ impl Game {
             let x: usize = rng.gen_range(0, 3);
             let y: usize = rng.gen_range(0, 3);
             if self.set_mark(x, y, self.currentplayer.mark) {
-                println!("X:{} Y:{}",x , y);
                 break;
             }
         }
@@ -234,13 +229,15 @@ fn main() {
             nextplayer: Player {ptype: np, mark: Mark::O},
         };
 
-        while (game.won() == false) && (game.is_draw() != false) {
+        game.print_grid();
+
+        while (game.won() == false) && (game.is_draw() == false) {
             if game.currentplayer.mark == Mark::X {
-                println!("X Player turn:");
+                println!("\nX Player turn:");
             }
             else
             { 
-                println!("Y Player's turn:");
+                println!("\nO Player's turn:");
             }
 
             game.take_turn();
@@ -249,6 +246,18 @@ fn main() {
             let player_holder: Player = game.currentplayer;
             game.currentplayer = game.nextplayer;
             game.nextplayer = player_holder
+        }
+
+        if game.is_draw() {
+            println!("The game is drawn!");
+        }
+        if game.won() {
+            if game.nextplayer.mark == Mark::X {
+                println!("The game is won by X!")
+            }
+            if game.nextplayer.mark == Mark::O {
+                println!("The game is won by O!")
+            }
         }
     }
 }
